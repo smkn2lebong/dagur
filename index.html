@@ -1,32 +1,61 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Mengalihkan ke Form</title>
-  <meta http-equiv="refresh" content="0; URL=https://script.google.com/macros/s/AKfycbxEJcehI51l9KL0Ky7qVUf8wFSosCKzRLZo4y8vS32pHs_XFW4qZwvZFw5xBnVQMOxg/exec">
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      margin-top: 100px;
-    }
-    a {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-    }
-    a:hover {
-      background-color: #45a049;
-    }
-  </style>
-</head>
-<body>
-  <h2>🔄 Mengalihkan ke halaman form...</h2>
-  <p>Jika halaman tidak terbuka secara otomatis, klik tombol di bawah ini:</p>
-  <a href="https://script.google.com/macros/s/AKfycbxEJcehI51l9KL0Ky7qVUf8wFSosCKzRLZo4y8vS32pHs_XFW4qZwvZFw5xBnVQMOxg/exec">Buka Form Sekarang</a>
-</body>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Panduan Akses Link</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 30px;
+        background-color: #f9f9f9;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 500px;
+        margin: auto;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+      button {
+        padding: 12px 24px;
+        margin-top: 20px;
+        font-weight: bold;
+        color: white;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>📱 Buka Link dengan Benar</h2>
+      <p id="pesan">Sedang memeriksa perangkat Anda...</p>
+      <button id="lanjut" style="display:none;">➡️ Lanjut ke Halaman</button>
+    </div>
+
+    <script>
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const dariWhatsApp = /WhatsApp/i.test(userAgent);
+      const pesan = document.getElementById("pesan");
+      const tombol = document.getElementById("lanjut");
+
+      if (dariWhatsApp) {
+        pesan.innerHTML = "🚫 Link ini tidak bisa dibuka langsung dari WhatsApp.<br><br>Silakan salin link ini dan buka di browser seperti <strong>Chrome</strong> atau <strong>Firefox</strong>.";
+      } else {
+        pesan.innerHTML = "✅ Anda bisa lanjut ke halaman utama.";
+        tombol.style.display = "inline-block";
+        tombol.onclick = () => {
+          window.location.href = "https://script.google.com/macros/s/AKfycbxEJcehI51l9KL0Ky7qVUf8wFSosCKzRLZo4y8vS32pHs_XFW4qZwvZFw5xBnVQMOxg/exec";
+        };
+      }
+    </script>
+  </body>
 </html>
