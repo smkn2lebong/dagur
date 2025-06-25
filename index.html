@@ -4,33 +4,49 @@
   <meta charset="UTF-8">
   <title>Edit Data Guru</title>
   <style>
-    body { font-family: sans-serif; max-width: 600px; margin: 20px auto; }
-    input, select, textarea { width: 100%; margin-bottom: 10px; padding: 8px; }
+    body { font-family: sans-serif; max-width: 650px; margin: 20px auto; padding: 10px; }
+    input, select, textarea {
+      width: 100%; margin-bottom: 10px; padding: 8px; font-size: 14px;
+    }
     label { font-weight: bold; margin-top: 10px; display: block; }
-    button { padding: 10px 20px; font-weight: bold; }
+    button {
+      padding: 10px 20px;
+      font-weight: bold;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover { background-color: #45a049; }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <h2>✍️ Edit Data Guru</h2>
+
   <label for="nikInput">Masukkan NIK Anda:</label>
-  <input type="text" id="nikInput" placeholder="Masukkan NIK">
-  <button onclick="cariData()">Cari</button>
+  <input type="text" id="nikInput" placeholder="Masukkan NIK Anda di sini">
+  <button onclick="cariData()">Cari Data</button>
 
   <form id="formGuru" style="display:none;" onsubmit="simpanData(event)">
+    <hr>
     <div id="formFields"></div>
-    <button type="submit">Simpan Perubahan</button>
+    <button type="submit">💾 Simpan Perubahan</button>
   </form>
 
   <div id="status"></div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzyktSVL-xIe0f1ixtlu5OTN06UiXozTzRwhN6tpSh_5pWdzBpE1HwAASAENM21lDdj/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwtr3jTg2piXcq7UGm7l-i8cXOndTlSCYwlsyTJ-xDoy55cR6Ijw1YCzmcLNiOJtIiP/exec";
     let globalData = {};
 
     function cariData() {
       const nik = document.getElementById("nikInput").value.trim();
       if (!nik) {
-        alert("Silakan masukkan NIK.");
+        alert("Silakan masukkan NIK terlebih dahulu.");
         return;
       }
 
@@ -45,8 +61,13 @@
           globalData = res.data;
           tampilkanForm(res.data);
         } else {
-          alert("Data tidak ditemukan. Pastikan NIK benar.");
+          document.getElementById("formGuru").style.display = "none";
+          document.getElementById("status").innerText = "❌ NIK tidak ditemukan. Coba lagi.";
         }
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("status").innerText = "❌ Gagal mengambil data. Cek koneksi.";
       });
     }
 
@@ -84,8 +105,12 @@
         if (res.status === "updated") {
           document.getElementById("status").innerText = "✅ Data berhasil diperbarui.";
         } else {
-          document.getElementById("status").innerText = "❌ Gagal menyimpan data.";
+          document.getElementById("status").innerText = "❌ Gagal memperbarui data.";
         }
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("status").innerText = "❌ Gagal mengirim data.";
       });
     }
   </script>
