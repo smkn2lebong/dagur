@@ -1,61 +1,135 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Panduan Akses Link</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      body {
-        font-family: sans-serif;
-        text-align: center;
-        padding: 30px;
-        background-color: #f9f9f9;
-      }
-      .card {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        max-width: 500px;
-        margin: auto;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      }
-      button {
-        padding: 12px 24px;
-        margin-top: 20px;
-        font-weight: bold;
-        color: white;
-        background-color: #4CAF50;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #45a049;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <h2>📱 Buka Link dengan Benar</h2>
-      <p id="pesan">Sedang memeriksa perangkat Anda...</p>
-      <button id="lanjut" style="display:none;">➡️ Lanjut ke Halaman</button>
-    </div>
+<head>
+  <meta charset="UTF-8">
+  <title>Form Edit Data Guru</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      background: #f9f9f9;
+    }
+    h2 {
+      text-align: center;
+    }
+    input, textarea, select {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    button {
+      padding: 12px 24px;
+      font-weight: bold;
+      color: white;
+      background-color: #007BFF;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #555;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <h2>✍️ Form Edit Data Guru</h2>
+  <label for="nik">Masukkan NIK:</label>
+  <input type="text" id="nik" placeholder="Contoh: 1707015207810004">
+  <button onclick="cariData()">Cari Data</button>
 
-    <script>
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      const dariWhatsApp = /WhatsApp/i.test(userAgent);
-      const pesan = document.getElementById("pesan");
-      const tombol = document.getElementById("lanjut");
+  <form id="formGuru" style="display:none;" onsubmit="simpanData(event)">
+    <div id="formFields"></div>
+    <button type="submit">💾 Simpan Perubahan</button>
+  </form>
 
-      if (dariWhatsApp) {
-        pesan.innerHTML = "🚫 Link ini tidak bisa dibuka langsung dari WhatsApp.<br><br>Silakan salin link ini dan buka di browser seperti <strong>Chrome</strong> atau <strong>Firefox</strong>.";
-      } else {
-        pesan.innerHTML = "✅ Anda bisa lanjut ke halaman utama.";
-        tombol.style.display = "inline-block";
-        tombol.onclick = () => {
-          window.location.href = "https://script.google.com/macros/s/AKfycbxEJcehI51l9KL0Ky7qVUf8wFSosCKzRLZo4y8vS32pHs_XFW4qZwvZFw5xBnVQMOxg/exec";
-        };
+  <div id="status"></div>
+  <footer>
+    SMK NEGERI 2 LEBONG &bull; Sistem Edit Data Guru &mdash; 2025
+  </footer>
+
+  <script>
+    const apiURL = "https://script.google.com/macros/s/AKfycbwGM9EwI2WXyFa3PRd9jazC2xHF9W-AMdmyD1itUaDi5JrDlJJ5FJYKGNYGXIskXQ7O/exec";
+
+    function cariData() {
+      const nik = document.getElementById("nik").value.trim();
+      if (!nik) return alert("Mohon isi NIK terlebih dahulu.");
+      document.getElementById("status").innerText = "⏳ Mencari data...";
+      fetch(`${apiURL}?nik=${nik}`)
+        .then(response => response.json())
+        .then(res => {
+          if (res.status === "success") {
+            tampilkanForm(res.data);
+            document.getElementById("status").innerText = "✅ Data ditemukan. Silakan edit.";
+          } else {
+            document.getElementById("formGuru").style.display = "none";
+            document.getElementById("status").innerText = "❌ NIK tidak ditemukan.";
+          }
+        })
+        .catch(() => {
+          document.getElementById("status").innerText = "⚠️ Terjadi kesalahan saat mengambil data.";
+        });
+    }
+
+    function tampilkanForm(data) {
+      const form = document.getElementById("formFields");
+      form.innerHTML = "";
+      for (const key in data) {
+        const value = data[key] || "";
+        const readOnly = key.toLowerCase() === "nik" ? "readonly" : "";
+        form.innerHTML += `
+          <label for="${key}">${key}</label>
+          <input name="${key}" id="${key}" value="${value}" ${readOnly}>
+        `;
       }
-    </script>
-  </body>
+      document.getElementById("formGuru").style.display = "block";
+    }
+
+    function simpanData(e) {
+      e.preventDefault();
+      const data = {};
+      const inputs = document.querySelectorAll("#formGuru input");
+      inputs.forEach(input => data[input.name] = input.value);
+
+      document.getElementById("status").innerText = "⏳ Menyimpan...";
+      fetch(apiURL, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+      })
+        .then(response => response.json())
+        .then(res => {
+          if (res.status === "updated") {
+            document.getElementById("status").innerText = "✅ Data berhasil diperbarui.";
+          } else {
+            document.getElementById("status").innerText = "❌ Gagal memperbarui data.";
+          }
+        })
+        .catch(() => {
+          document.getElementById("status").innerText = "⚠️ Gagal menghubungi server.";
+        });
+    }
+  </script>
+</body>
 </html>
