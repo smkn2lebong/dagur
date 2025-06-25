@@ -1,5 +1,5 @@
-
-const scriptURL = "https://script.google.com/macros/s/AKfycbwtr3jTg2piXcq7UGm7l-i8cXOndTlSCYwlsyTJ-xDoy55cR6Ijw1YCzmcLNiOJtIiP/exec";
+const scriptURL = "const scriptURL = "https://script.google.com/macros/s/AKfycbwtr3jTg2piXcq7UGm7l-i8cXOndTlSCYwlsyTJ-xDoy55cR6Ijw1YCzmcLNiOJtIiP/exec";
+";
 let globalData = {};
 
 function cariData() {
