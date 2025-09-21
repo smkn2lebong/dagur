@@ -777,22 +777,36 @@
     if (startDate) downloadURL += '&startDate=' + startDate;
     if (endDate) downloadURL += '&endDate=' + endDate;
     
-    // Simulate download process
-    setTimeout(() => {
-      // In real implementation, this would trigger actual download
-      const link = document.createElement('a');
-      link.href = downloadURL;
-      link.download = `urc_data_${format}_${new Date().toISOString().split('T')[0]}.${format === 'excel' ? 'xlsx' : format}`;
-      
-      // For demo purposes, show success message
-      showAlert(`Download ${format.toUpperCase()} berhasil dimulai!`, "success");
-      
+    // REAL DOWNLOAD - bukan simulasi lagi
+    fetch(downloadURL, { 
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success && data.downloadUrl) {
+        // Open download URL in new tab
+        window.open(data.downloadUrl, '_blank');
+        showAlert(`Download ${format.toUpperCase()} berhasil!`, "success");
+      } else {
+        throw new Error(data.message || 'Download gagal');
+      }
+    })
+    .catch(error => {
+      console.error('Download error:', error);
+      showAlert("Gagal download: " + error.message, "error");
+    })
+    .finally(() => {
       // Close modal
       bootstrap.Modal.getInstance(document.getElementById('downloadModal')).hide();
-      
-      // In real implementation, uncomment this line:
-      // link.click();
-    }, 1500);
+    });
   }
 
   function loadStatistics() {
@@ -801,13 +815,51 @@
     document.getElementById('todayEntries').textContent = '⏳';
     document.getElementById('weekEntries').textContent = '⏳';
     
-    // Simulate API call to get statistics
-    setTimeout(() => {
-      // In real implementation, fetch from Google Apps Script
-      document.getElementById('totalEntries').textContent = Math.floor(Math.random() * 500) + 100;
-      document.getElementById('todayEntries').textContent = Math.floor(Math.random() * 20) + 5;
-      document.getElementById('weekEntries').textContent = Math.floor(Math.random() * 100) + 20;
-    }, 1000);
+    // REAL API CALL ke Apps Script
+    fetch(scriptURL + '?action=stats', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        const stats = data.stats;
+        document.getElementById('totalEntries').textContent = stats.totalEntries;
+        document.getElementById('todayEntries').textContent = stats.todayEntries;
+        document.getElementById('weekEntries').textContent = stats.weekEntries;
+        
+        // Update top complaints
+        const complaintsDiv = document.getElementById('topComplaints');
+        if (stats.topComplaints && stats.topComplaints.length > 0) {
+          complaintsDiv.innerHTML = '';
+          stats.topComplaints.forEach(complaint => {
+            const complaintDiv = document.createElement('div');
+            complaintDiv.className = 'd-flex justify-content-between align-items-center py-2 border-bottom';
+            complaintDiv.innerHTML = `
+              <span>${complaint.complaint}</span>
+              <span class="badge bg-primary">${complaint.percentage}%</span>
+            `;
+            complaintsDiv.appendChild(complaintDiv);
+          });
+        }
+      } else {
+        throw new Error(data.message || 'Gagal load statistik');
+      }
+    })
+    .catch(error => {
+      console.error('Statistics error:', error);
+      document.getElementById('totalEntries').textContent = 'Error';
+      document.getElementById('todayEntries').textContent = 'Error';
+      document.getElementById('weekEntries').textContent = 'Error';
+      showAlert("Gagal load statistik: " + error.message, "error");
+    });
   }
 
   function refreshStats() {
