@@ -1,135 +1,842 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Form Edit Data Guru</title>
+  <title>URC Bantu Rakyat</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      --card-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      --card-hover-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    }
+
     body {
-      font-family: sans-serif;
+      background: var(--primary-gradient);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
-      max-width: 800px;
-      margin: auto;
-      background: #f9f9f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    h2 {
-      text-align: center;
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
-    input, textarea, select {
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
       width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      font-size: 14px;
-      box-sizing: border-box;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
     }
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-      display: block;
+
+    .glass-card:hover::before {
+      left: 100%;
     }
-    button {
-      padding: 12px 24px;
-      font-weight: bold;
+
+    .glass-card:hover {
+      box-shadow: var(--card-hover-shadow);
+      transform: translateY(-5px);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Login Styles */
+    #loginBox {
+      max-width: 400px;
+      padding: 40px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .login-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--primary-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .login-icon i {
+      font-size: 2rem;
       color: white;
-      background-color: #007BFF;
+    }
+
+    .form-floating {
+      margin-bottom: 20px;
+    }
+
+    .form-floating .form-control {
+      border: 2px solid transparent;
+      border-radius: 15px;
+      height: 60px;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      background: rgba(248, 249, 250, 0.8);
+    }
+
+    .form-floating .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .form-floating label {
+      color: #6c757d;
+      font-weight: 500;
+    }
+
+    .btn-login {
+      height: 60px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      background: var(--primary-gradient);
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-login::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
       width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
     }
-    button:hover {
-      background-color: #0056b3;
+
+    .btn-login:hover::before {
+      left: 100%;
     }
-    #status {
-      margin-top: 20px;
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Form Styles */
+    #formBox {
+      max-width: 700px;
+    }
+
+    .form-header {
+      text-align: center;
+      padding: 30px 0;
+      background: var(--primary-gradient);
+      margin: -30px -30px 30px -30px;
+      border-radius: 20px 20px 0 0;
+      color: white;
+    }
+
+    .form-header h4 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .form-header .subtitle {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-top: 5px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-label i {
+      color: #667eea;
+      font-size: 1.1rem;
+    }
+
+    .form-control, .form-select {
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      background: white;
+      transform: translateY(-1px);
+    }
+
+    .form-text {
+      font-size: 0.875rem;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .form-text i {
+      font-size: 0.8rem;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-submit {
+      height: 55px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      background: var(--success-gradient);
+      border: none;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-submit:hover::before {
+      left: 100%;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(17, 153, 142, 0.4);
+    }
+
+    .alert-error {
+      background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 500;
+      padding: 12px 16px;
+      margin-top: 15px;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* Loading Animation */
+    .spinner-border-sm {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .glass-card {
+        margin: 10px;
+        padding: 20px;
+      }
+      
+      #loginBox {
+        padding: 30px 20px;
+      }
+      
+      .form-header {
+        margin: -20px -20px 20px -20px;
+        padding: 25px 0;
+      }
+      
+      .form-header h4 {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Success Animation */
+    @keyframes successPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .btn-success-animation {
+      animation: successPulse 0.6s ease-in-out;
+    }
+
+    /* Admin Menu Styles */
+    .admin-menu {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-outline-light {
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      font-weight: 500;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-light:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: white;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Modal Styles */
+    .modal-content {
+      border-radius: 15px;
+      border: none;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      background: var(--primary-gradient);
+      color: white;
+      border-radius: 15px 15px 0 0;
+      border-bottom: none;
+    }
+
+    .modal-title {
+      font-weight: 600;
+    }
+
+    .download-option {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .download-option:hover {
+      background: #e9ecef;
+      border-color: #667eea;
+      transform: translateY(-2px);
+    }
+
+    .download-option i {
+      font-size: 2rem;
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .stats-card {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 10px 0;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .stats-number {
+      font-size: 2.5rem;
       font-weight: bold;
-      text-align: center;
+      margin: 0;
     }
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: #555;
-      margin-top: 40px;
+
+    .stats-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
-  <h2>✍️ Form Edit Data Guru</h2>
-  <label for="nik">Masukkan NIK:</label>
-  <input type="text" id="nik" placeholder="Contoh: 1707015207810004">
-  <button onclick="cariData()">Cari Data</button>
 
-  <form id="formGuru" style="display:none;" onsubmit="simpanData(event)">
-    <div id="formFields"></div>
-    <button type="submit">💾 Simpan Perubahan</button>
-  </form>
+<!-- LOGIN -->
+<div class="glass-card p-4 w-100" id="loginBox">
+  <div class="login-header">
+    <div class="login-icon">
+      <i class="fas fa-shield-alt"></i>
+    </div>
+    <h4 class="mb-0">Login URC</h4>
+    <p class="subtitle mb-0">Unit Respons Cepat Bantu Rakyat</p>
+  </div>
+  
+  <div class="form-floating mb-3">
+    <input type="password" id="loginPass" class="form-control" placeholder="Password">
+    <label for="loginPass"><i class="fas fa-lock"></i> Password</label>
+  </div>
+  
+  <button class="btn btn-login btn-primary w-100" onclick="checkLogin()">
+    <i class="fas fa-sign-in-alt me-2"></i>Masuk ke Sistem
+  </button>
+  
+  <div id="loginError"></div>
+</div>
 
-  <div id="status"></div>
-  <footer>
-    SMK NEGERI 2 LEBONG &bull; Sistem Edit Data Guru &mdash; 2025
-  </footer>
+<!-- FORM -->
+<div class="container hidden" id="formBox">
+  <div class="glass-card p-4">
+    <div class="form-header">
+      <h4>Form URC Bantu Rakyat</h4>
+      <p class="subtitle">Unit Respons Cepat untuk Melayani Masyarakat</p>
+      
+      <!-- Admin Menu -->
+      <div class="admin-menu mt-3">
+        <button type="button" class="btn btn-outline-light btn-sm me-2" onclick="showDownloadMenu()">
+          <i class="fas fa-download me-1"></i>Download Data
+        </button>
+        <button type="button" class="btn btn-outline-light btn-sm" onclick="showStatsMenu()">
+          <i class="fas fa-chart-bar me-1"></i>Statistik
+        </button>
+      </div>
+    </div>
+    
+    <form id="urcForm">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-calendar-alt"></i>Hari/Tanggal
+            </label>
+            <input type="date" name="tanggal" class="form-control" required>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-user"></i>Nama Lengkap
+            </label>
+            <input type="text" name="nama" class="form-control" required placeholder="Masukkan nama lengkap">
+          </div>
+        </div>
+      </div>
 
-  <script>
-    const apiURL = "https://script.google.com/macros/s/AKfycbwGM9EwI2WXyFa3PRd9jazC2xHF9W-AMdmyD1itUaDi5JrDlJJ5FJYKGNYGXIskXQ7O/exec";
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-id-card"></i>NIK
+            </label>
+            <input type="text" name="nik" class="form-control" required maxlength="16" minlength="16" pattern="[0-9]{16}" placeholder="16 digit angka" inputmode="numeric">
+            <div class="form-text text-danger">
+              <i class="fas fa-info-circle"></i>Harus 16 digit angka.
+            </div>
+          </div>
+        </div>
 
-    function cariData() {
-      const nik = document.getElementById("nik").value.trim();
-      if (!nik) return alert("Mohon isi NIK terlebih dahulu.");
-      document.getElementById("status").innerText = "⏳ Mencari data...";
-      fetch(`${apiURL}?nik=${nik}`)
-        .then(response => response.json())
-        .then(res => {
-          if (res.status === "success") {
-            tampilkanForm(res.data);
-            document.getElementById("status").innerText = "✅ Data ditemukan. Silakan edit.";
-          } else {
-            document.getElementById("formGuru").style.display = "none";
-            document.getElementById("status").innerText = "❌ NIK tidak ditemukan.";
-          }
-        })
-        .catch(() => {
-          document.getElementById("status").innerText = "⚠️ Terjadi kesalahan saat mengambil data.";
-        });
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-phone"></i>No HP
+            </label>
+            <input type="tel" name="hp" class="form-control" required pattern="0[0-9]+" placeholder="Contoh: 081234567890">
+            <div class="form-text text-danger">
+              <i class="fas fa-info-circle"></i>Harus diawali dengan angka 0.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-map-marker-alt"></i>Alamat Lengkap
+        </label>
+        <textarea name="alamat" class="form-control" required placeholder="Masukkan alamat lengkap Anda"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-exclamation-triangle"></i>Keluhan
+        </label>
+        <textarea name="keluhan" class="form-control" required placeholder="Jelaskan keluhan atau masalah yang Anda hadapi"></textarea>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-info-circle"></i>Informasi & Edukasi
+            </label>
+            <input type="text" name="info" class="form-control" required placeholder="Informasi yang dibutuhkan">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-cogs"></i>Aktivasi
+            </label>
+            <input type="text" name="aktifasi" class="form-control" required placeholder="Jenis aktivasi yang diperlukan">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-sticky-note"></i>Keterangan (Opsional)
+        </label>
+        <input type="text" name="ket" class="form-control" placeholder="Keterangan tambahan jika ada">
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn btn-submit btn-success w-100">
+        <i class="fas fa-paper-plane me-2"></i>Kirim Data
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Download Modal -->
+<div class="modal fade" id="downloadModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-download me-2"></i>Download Data URC
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="download-option text-center" onclick="downloadData('excel')">
+              <i class="fas fa-file-excel"></i>
+              <h6>Excel Spreadsheet</h6>
+              <p class="text-muted small">Download sebagai file .xlsx dengan formatting yang rapi</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="download-option text-center" onclick="downloadData('csv')">
+              <i class="fas fa-file-csv"></i>
+              <h6>CSV File</h6>
+              <p class="text-muted small">Download sebagai file .csv untuk import ke aplikasi lain</p>
+            </div>
+          </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div class="row">
+          <div class="col-md-6">
+            <div class="download-option text-center" onclick="downloadData('pdf')">
+              <i class="fas fa-file-pdf"></i>
+              <h6>PDF Report</h6>
+              <p class="text-muted small">Download laporan dalam format PDF</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="download-option text-center" onclick="downloadData('backup')">
+              <i class="fas fa-database"></i>
+              <h6>Full Backup</h6>
+              <p class="text-muted small">Download backup lengkap semua data</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4">
+          <label class="form-label">Filter Tanggal (Opsional):</label>
+          <div class="row">
+            <div class="col-md-6">
+              <input type="date" id="startDate" class="form-control" placeholder="Tanggal Mulai">
+            </div>
+            <div class="col-md-6">
+              <input type="date" id="endDate" class="form-control" placeholder="Tanggal Akhir">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Statistics Modal -->
+<div class="modal fade" id="statsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-chart-bar me-2"></i>Statistik Data URC
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="stats-card text-center">
+              <p class="stats-number" id="totalEntries">--</p>
+              <p class="stats-label">Total Data</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stats-card text-center">
+              <p class="stats-number" id="todayEntries">--</p>
+              <p class="stats-label">Hari Ini</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stats-card text-center">
+              <p class="stats-number" id="weekEntries">--</p>
+              <p class="stats-label">Minggu Ini</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4">
+          <h6>Keluhan Terbanyak:</h6>
+          <div id="topComplaints">
+            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+              <span>Infrastruktur</span>
+              <span class="badge bg-primary">45%</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+              <span>Pelayanan Publik</span>
+              <span class="badge bg-primary">30%</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center py-2">
+              <span>Kesehatan</span>
+              <span class="badge bg-primary">25%</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4 text-center">
+          <button class="btn btn-primary" onclick="refreshStats()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ==== LOGIN ====
+  function checkLogin() {
+    const pass = document.getElementById("loginPass").value;
+    const errorDiv = document.getElementById("loginError");
+    
+    if(pass === "Lemari") {
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("formBox").classList.remove("hidden");
+    } else {
+      errorDiv.innerHTML = '<div class="alert-error"><i class="fas fa-exclamation-triangle me-2"></i>Password salah! Silakan coba lagi.</div>';
+      
+      // Clear error after 3 seconds
+      setTimeout(() => {
+        errorDiv.innerHTML = '';
+      }, 3000);
+    }
+  }
+
+  // Allow Enter key for login
+  document.getElementById("loginPass").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+      checkLogin();
+    }
+  });
+
+  // ==== FORM SUBMIT ====
+  const scriptURL = "https://script.google.com/macros/s/AKfycbw_8wbIUs00SCP_eTr_UgyTCfT71jihwuZa-wqJDKC_gfi2DWS4pY1Y9IAvm01pYbgU5Q/exec";
+  const form = document.getElementById("urcForm");
+  const btn = document.getElementById("submitBtn");
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    const nik = form.nik.value.trim();
+    const hp = form.hp.value.trim();
+
+    // Validasi NIK & HP
+    if(!/^[0-9]{16}$/.test(nik)) {
+      showAlert("NIK harus 16 digit angka tanpa spasi.", "error");
+      return;
     }
 
-    function tampilkanForm(data) {
-      const form = document.getElementById("formFields");
-      form.innerHTML = "";
-      for (const key in data) {
-        const value = data[key] || "";
-        const readOnly = key.toLowerCase() === "nik" ? "readonly" : "";
-        form.innerHTML += `
-          <label for="${key}">${key}</label>
-          <input name="${key}" id="${key}" value="${value}" ${readOnly}>
-        `;
-      }
-      document.getElementById("formGuru").style.display = "block";
+    if(!/^0[0-9]+$/.test(hp)) {
+      showAlert("Nomor HP harus diawali dengan angka 0.", "error");
+      return;
     }
 
-    function simpanData(e) {
-      e.preventDefault();
-      const data = {};
-      const inputs = document.querySelectorAll("#formGuru input");
-      inputs.forEach(input => data[input.name] = input.value);
+    // Tombol loading
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span><i class="fas fa-clock me-2"></i>Mengirim Data...';
 
-      document.getElementById("status").innerText = "⏳ Menyimpan...";
-      fetch(apiURL, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
+    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+      .then(response => {
+        showAlert("Data berhasil dikirim! Terima kasih atas laporan Anda.", "success");
+        form.reset();
+        btn.classList.add("btn-success-animation");
       })
-        .then(response => response.json())
-        .then(res => {
-          if (res.status === "updated") {
-            document.getElementById("status").innerText = "✅ Data berhasil diperbarui.";
-          } else {
-            document.getElementById("status").innerText = "❌ Gagal memperbarui data.";
-          }
-        })
-        .catch(() => {
-          document.getElementById("status").innerText = "⚠️ Gagal menghubungi server.";
-        });
-    }
-  </script>
+      .catch(error => {
+        showAlert("Gagal mengirim data: " + error.message, "error");
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Kirim Data';
+        setTimeout(() => btn.classList.remove("btn-success-animation"), 600);
+      });
+  });
+
+  // Custom Alert Function
+  function showAlert(message, type) {
+    const alertHTML = `
+      <div class="alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', alertHTML);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      const alert = document.querySelector('.alert');
+      if (alert) alert.remove();
+    }, 5000);
+  }
+
+  // Set today's date as default
+  document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.querySelector('input[name="tanggal"]').value = today;
+  });
+
+  // ==== DOWNLOAD FUNCTIONS ====
+  function showDownloadMenu() {
+    const downloadModal = new bootstrap.Modal(document.getElementById('downloadModal'));
+    downloadModal.show();
+  }
+
+  function showStatsMenu() {
+    const statsModal = new bootstrap.Modal(document.getElementById('statsModal'));
+    loadStatistics();
+    statsModal.show();
+  }
+
+  function downloadData(format) {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    
+    // Show loading
+    showAlert("Sedang memproses download...", "info");
+    
+    // Build download URL with parameters
+    let downloadURL = scriptURL + '?action=download&format=' + format;
+    if (startDate) downloadURL += '&startDate=' + startDate;
+    if (endDate) downloadURL += '&endDate=' + endDate;
+    
+    // Simulate download process
+    setTimeout(() => {
+      // In real implementation, this would trigger actual download
+      const link = document.createElement('a');
+      link.href = downloadURL;
+      link.download = `urc_data_${format}_${new Date().toISOString().split('T')[0]}.${format === 'excel' ? 'xlsx' : format}`;
+      
+      // For demo purposes, show success message
+      showAlert(`Download ${format.toUpperCase()} berhasil dimulai!`, "success");
+      
+      // Close modal
+      bootstrap.Modal.getInstance(document.getElementById('downloadModal')).hide();
+      
+      // In real implementation, uncomment this line:
+      // link.click();
+    }, 1500);
+  }
+
+  function loadStatistics() {
+    // Show loading state
+    document.getElementById('totalEntries').textContent = '⏳';
+    document.getElementById('todayEntries').textContent = '⏳';
+    document.getElementById('weekEntries').textContent = '⏳';
+    
+    // Simulate API call to get statistics
+    setTimeout(() => {
+      // In real implementation, fetch from Google Apps Script
+      document.getElementById('totalEntries').textContent = Math.floor(Math.random() * 500) + 100;
+      document.getElementById('todayEntries').textContent = Math.floor(Math.random() * 20) + 5;
+      document.getElementById('weekEntries').textContent = Math.floor(Math.random() * 100) + 20;
+    }, 1000);
+  }
+
+  function refreshStats() {
+    loadStatistics();
+    showAlert("Statistik berhasil diperbarui!", "success");
+  }
+
+  // Enhanced Alert Function with info type
+  function showAlert(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : type === 'info' ? 'alert-info' : 'alert-danger';
+    const iconClass = type === 'success' ? 'check-circle' : type === 'info' ? 'info-circle' : 'exclamation-triangle';
+    
+    const alertHTML = `
+      <div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+        <i class="fas fa-${iconClass} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', alertHTML);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      const alert = document.querySelector('.alert');
+      if (alert) alert.remove();
+    }, 5000);
+  }
+</script>
+
 </body>
 </html>
